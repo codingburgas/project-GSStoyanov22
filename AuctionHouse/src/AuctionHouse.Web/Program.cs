@@ -1,33 +1,12 @@
-using AuctionHouse.Core.Interfaces;
 using AuctionHouse.Core.Models;
+using AuctionHouse.Infrastructure;
 using AuctionHouse.Infrastructure.Data;
-using AuctionHouse.Infrastructure.Repositories;
-using AuctionHouse.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services
-    .AddIdentity<ApplicationUser, IdentityRole>(options =>
-    {
-        options.Password.RequireDigit = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequiredLength = 6;
-    })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
-builder.Services.AddScoped<IBidRepository, BidRepository>();
-builder.Services.AddScoped<IAuctionService, AuctionService>();
-builder.Services.AddScoped<IBidService, BidService>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
