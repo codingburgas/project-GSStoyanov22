@@ -16,7 +16,9 @@
         <tr>
             <th>Title</th>
             <th>Current Price</th>
+            <th>Bids</th>
             <th>Bid Step</th>
+            <th>Created (UTC)</th>
             <th>End Time (UTC)</th>
             <th>Status</th>
             <th class="text-center">Actions</th>
@@ -28,7 +30,9 @@
         <tr>
             <td>@auction.Title</td>
             <td>@auction.CurrentPrice.ToString("C")</td>
+            <td>@auction.BidsCount</td>
             <td>@auction.BidStep.ToString("C")</td>
+            <td>@auction.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
             <td>@auction.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
             <td>
                 @if (auction.IsActive && auction.EndTime > DateTime.UtcNow)
