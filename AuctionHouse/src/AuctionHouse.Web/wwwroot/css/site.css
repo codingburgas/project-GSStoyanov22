@@ -1,0 +1,8 @@
+body {
+    background: linear-gradient(180deg, #f5f7fb 0%, #eef2f8 100%);
+    min-height: 100vh;
+}
+
+.hero {
+    background: linear-gradient(135deg, #1f3a8a, #0f172a);
+}
