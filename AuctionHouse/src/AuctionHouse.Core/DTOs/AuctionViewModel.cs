@@ -24,7 +24,11 @@ public class AuctionViewModel
 
     public DateTime EndTime { get; set; }
 
+    public DateTime CreatedAt { get; set; }
+
     public bool IsActive { get; set; }
+
+    public int BidsCount { get; set; }
 
     public string? SellerId { get; set; }
 }
