@@ -1,8 +1,8 @@
 using AuctionHouse.Core.DTOs;
 using AuctionHouse.Core.Interfaces;
+using AuctionHouse.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace AuctionHouse.Web.Controllers;
 
@@ -52,7 +52,7 @@ public class AuctionController : Controller
             return View(model);
         }
 
-        var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var sellerId = User.GetUserIdOrThrow();
         await auctionService.CreateAuctionAsync(model, sellerId);
         return RedirectToAction(nameof(Index));
     }
@@ -84,7 +84,7 @@ public class AuctionController : Controller
             return View(model);
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userId = User.GetUserIdOrThrow();
         var isAdmin = User.IsInRole("Admin");
         var updated = await auctionService.UpdateAuctionAsync(model, userId, isAdmin);
         if (!updated)
@@ -117,7 +117,7 @@ public class AuctionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userId = User.GetUserIdOrThrow();
         var isAdmin = User.IsInRole("Admin");
 
         var deleted = await auctionService.DeleteAuctionAsync(id, userId, isAdmin);
@@ -136,7 +136,7 @@ public class AuctionController : Controller
             return true;
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         return !string.IsNullOrWhiteSpace(sellerId) && sellerId == userId;
     }
 }
