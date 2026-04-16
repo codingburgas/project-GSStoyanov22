@@ -17,6 +17,7 @@ public class AuctionRepository : IAuctionRepository
     {
         return await dbContext.Auctions
             .Include(a => a.Seller)
+            .Include(a => a.Bids)
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync();
     }
@@ -51,6 +52,7 @@ public class AuctionRepository : IAuctionRepository
     public async Task<IEnumerable<Auction>> GetActiveAuctionsAsync()
     {
         return await dbContext.Auctions
+            .Include(a => a.Bids)
             .Where(a => a.IsActive && a.EndTime > DateTime.UtcNow)
             .OrderBy(a => a.EndTime)
             .ToListAsync();
