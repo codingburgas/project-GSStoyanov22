@@ -1,0 +1,37 @@
+@model AuctionViewModel
+@{
+    ViewData["Title"] = "Auction Details";
+}
+
+<h2 class="mb-3">@Model.Title</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <p class="mb-2"><strong>Description:</strong> @Model.Description</p>
+        <p class="mb-2"><strong>Starting Price:</strong> @Model.StartingPrice.ToString("C")</p>
+        <p class="mb-2"><strong>Current Price:</strong> @Model.CurrentPrice.ToString("C")</p>
+        <p class="mb-2"><strong>Bid Step:</strong> @Model.BidStep.ToString("C")</p>
+        <p class="mb-2"><strong>Ends:</strong> @Model.EndTime.ToString("yyyy-MM-dd HH:mm") UTC</p>
+        <p class="mb-0"><strong>Status:</strong> @(Model.IsActive && Model.EndTime > DateTime.UtcNow ? "Active" : "Closed")</p>
+    </div>
+</div>
+
+@if (User.Identity?.IsAuthenticated == true && Model.IsActive && Model.EndTime > DateTime.UtcNow)
+{
+    <form asp-controller="Bid" asp-action="Place" method="post" class="card card-body mb-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="AuctionId" value="@Model.Id" />
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Your Bid</label>
+                <input name="Amount" type="number" step="0.01" min="@(Model.CurrentPrice + Model.BidStep)" class="form-control" required />
+                <div class="form-text">Must be above @Model.CurrentPrice.ToString("C") and follow step @Model.BidStep.ToString("C").</div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Place Bid</button>
+            </div>
+        </div>
+    </form>
+}
+
+<a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
