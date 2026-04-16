@@ -1,0 +1,50 @@
+@model AuctionViewModel
+@{
+    ViewData["Title"] = "Create Auction";
+}
+
+<h2 class="mb-3">Create Auction</h2>
+
+<form asp-action="Create" method="post" class="card card-body shadow-sm">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="StartingPrice" class="form-label"></label>
+            <input asp-for="StartingPrice" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="StartingPrice" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="BidStep" class="form-label"></label>
+            <input asp-for="BidStep" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="BidStep" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="EndTime" class="form-label"></label>
+            <input asp-for="EndTime" class="form-control" type="datetime-local" />
+            <span asp-validation-for="EndTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Create</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
