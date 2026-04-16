@@ -1,8 +1,8 @@
 using AuctionHouse.Core.DTOs;
 using AuctionHouse.Core.Interfaces;
+using AuctionHouse.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace AuctionHouse.Web.Controllers;
 
@@ -26,7 +26,7 @@ public class BidController : Controller
             return RedirectToAction("Details", "Auction", new { id = model.AuctionId });
         }
 
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var userId = User.GetUserIdOrThrow();
         var result = await bidService.PlaceBidAsync(model, userId);
 
         if (!result.Success)
