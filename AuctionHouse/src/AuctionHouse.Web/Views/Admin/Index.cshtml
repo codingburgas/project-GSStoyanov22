@@ -1,10 +1,40 @@
+@model IEnumerable<AuctionViewModel>
 @{
     ViewData["Title"] = "Admin";
 }
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h2 class="h4">Admin Panel</h2>
-        <p class="mb-0">Role seeding is enabled. Use this area for future admin features.</p>
-    </div>
-</div>
+<h2 class="mb-3">Admin Panel</h2>
+
+<table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>End Time (UTC)</th>
+            <th>Current Price</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var auction in Model)
+    {
+        <tr>
+            <td>@auction.Title</td>
+            <td>@(auction.IsActive ? "Active" : "Closed")</td>
+            <td>@auction.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@auction.CurrentPrice.ToString("C")</td>
+            <td class="text-center">
+                <a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id" class="btn btn-sm btn-outline-primary">View</a>
+                @if (auction.IsActive)
+                {
+                    <form asp-action="EndAuction" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@auction.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">End</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
