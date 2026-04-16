@@ -10,7 +10,9 @@
         <p class="mb-2"><strong>Description:</strong> @Model.Description</p>
         <p class="mb-2"><strong>Starting Price:</strong> @Model.StartingPrice.ToString("C")</p>
         <p class="mb-2"><strong>Current Price:</strong> @Model.CurrentPrice.ToString("C")</p>
+        <p class="mb-2"><strong>Total Bids:</strong> @Model.BidsCount</p>
         <p class="mb-2"><strong>Bid Step:</strong> @Model.BidStep.ToString("C")</p>
+        <p class="mb-2"><strong>Created:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC</p>
         <p class="mb-2"><strong>Ends:</strong> @Model.EndTime.ToString("yyyy-MM-dd HH:mm") UTC</p>
         <p class="mb-0"><strong>Status:</strong> @(Model.IsActive && Model.EndTime > DateTime.UtcNow ? "Active" : "Closed")</p>
     </div>
