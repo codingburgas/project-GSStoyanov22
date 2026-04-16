@@ -1,0 +1,54 @@
+@model IEnumerable<AuctionViewModel>
+@{
+    ViewData["Title"] = "Auctions";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Active Auctions</h2>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a asp-action="Create" class="btn btn-primary">Create Auction</a>
+    }
+</div>
+
+<table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Title</th>
+            <th>Current Price</th>
+            <th>Bid Step</th>
+            <th>End Time (UTC)</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var auction in Model)
+    {
+        <tr>
+            <td>@auction.Title</td>
+            <td>@auction.CurrentPrice.ToString("C")</td>
+            <td>@auction.BidStep.ToString("C")</td>
+            <td>@auction.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>
+                @if (auction.IsActive && auction.EndTime > DateTime.UtcNow)
+                {
+                    <span class="badge bg-success">Active</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Closed</span>
+                }
+            </td>
+            <td class="text-center">
+                <a asp-action="Details" asp-route-id="@auction.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-action="Edit" asp-route-id="@auction.Id" class="btn btn-sm btn-outline-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@auction.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
