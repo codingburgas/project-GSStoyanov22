@@ -119,7 +119,9 @@ public class AuctionService : IAuctionService
             CurrentPrice = auction.CurrentPrice,
             BidStep = auction.BidStep,
             EndTime = auction.EndTime,
+            CreatedAt = auction.CreatedAt,
             IsActive = auction.IsActive,
+            BidsCount = auction.Bids.Count,
             SellerId = auction.SellerId
         };
     }
