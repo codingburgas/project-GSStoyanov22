@@ -1,0 +1,74 @@
+@model UserDashboardViewModel
+@{
+    ViewData["Title"] = "My Dashboard";
+}
+
+<h2 class="mb-4">My Dashboard</h2>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">My Auctions</div>
+            <ul class="list-group list-group-flush">
+                @if (!Model.UserAuctions.Any())
+                {
+                    <li class="list-group-item text-muted">No auctions created yet.</li>
+                }
+                else
+                {
+                    @foreach (var auction in Model.UserAuctions)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id">@auction.Title</a>
+                            <span class="badge text-bg-light">@auction.BidsCount bids</span>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Won Auctions</div>
+            <ul class="list-group list-group-flush">
+                @if (!Model.WonAuctions.Any())
+                {
+                    <li class="list-group-item text-muted">No won auctions yet.</li>
+                }
+                else
+                {
+                    @foreach (var auction in Model.WonAuctions)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id">@auction.Title</a>
+                            <span class="badge bg-success">Won</span>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Active Bids</div>
+            <ul class="list-group list-group-flush">
+                @if (!Model.ActiveBids.Any())
+                {
+                    <li class="list-group-item text-muted">No active bids.</li>
+                }
+                else
+                {
+                    @foreach (var auction in Model.ActiveBids)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id">@auction.Title</a>
+                            <span class="badge bg-primary">@auction.CurrentPrice.ToString("C")</span>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+@model ReportsViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h2 class="mb-3">Reports & Statistics</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card p-3 stat-card-admin"><span class="text-muted">Total Auctions</span><strong class="fs-4">@Model.TotalAuctions</strong></div></div>
+    <div class="col-md-3"><div class="card p-3 stat-card-admin"><span class="text-muted">Active</span><strong class="fs-4">@Model.TotalActiveAuctions</strong></div></div>
+    <div class="col-md-3"><div class="card p-3 stat-card-admin"><span class="text-muted">Closed</span><strong class="fs-4">@Model.TotalClosedAuctions</strong></div></div>
+    <div class="col-md-3"><div class="card p-3 stat-card-admin"><span class="text-muted">Total Bids</span><strong class="fs-4">@Model.TotalBids</strong></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Active Auctions</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var auction in Model.ActiveAuctions)
+                {
+                    <li class="list-group-item"><a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id">@auction.Title</a></li>
+                }
+                @if (!Model.ActiveAuctions.Any())
+                {
+                    <li class="list-group-item text-muted">No active auctions.</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Ending Soon (24h)</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var auction in Model.EndingSoonAuctions)
+                {
+                    <li class="list-group-item d-flex justify-content-between"><a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id">@auction.Title</a><small class="text-muted">@auction.EndTime.ToString("MM-dd HH:mm")</small></li>
+                }
+                @if (!Model.EndingSoonAuctions.Any())
+                {
+                    <li class="list-group-item text-muted">No auctions ending soon.</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header fw-semibold">Won Auctions</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var auction in Model.WonAuctions)
+                {
+                    <li class="list-group-item"><a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id">@auction.Title</a></li>
+                }
+                @if (!Model.WonAuctions.Any())
+                {
+                    <li class="list-group-item text-muted">No won auctions yet.</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
