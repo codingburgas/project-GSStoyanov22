@@ -9,6 +9,7 @@ public static class SeedData
 
     public static async Task SeedRolesAndAdminAsync(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
     {
+        // Make sure the base roles exist before we attach users to them.
         foreach (var role in Roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
@@ -20,6 +21,7 @@ public static class SeedData
         const string adminEmail = "admin@auction.com";
         const string adminPassword = "Admin123!";
 
+        // Create a default admin account only if it has not been created yet.
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser is null)
         {
@@ -37,6 +39,7 @@ public static class SeedData
             }
         }
 
+        // Keep the default admin in both roles for full access to the app.
         if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
