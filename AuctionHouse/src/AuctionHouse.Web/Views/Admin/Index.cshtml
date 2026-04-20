@@ -1,40 +1,117 @@
 @model IEnumerable<AuctionViewModel>
+@using AuctionHouse.Core.Models
 @{
     ViewData["Title"] = "Admin";
+    var users = ViewBag.Users as List<ApplicationUser> ?? new List<ApplicationUser>();
+    var totalBids = (int)(ViewBag.TotalBids ?? 0);
+    var totalUsers = (int)(ViewBag.TotalUsers ?? 0);
 }
 
 <h2 class="mb-3">Admin Panel</h2>
 
-<table class="table table-striped table-bordered align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>End Time (UTC)</th>
-            <th>Current Price</th>
-            <th class="text-center">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var auction in Model)
-    {
-        <tr>
-            <td>@auction.Title</td>
-            <td>@(auction.IsActive ? "Active" : "Closed")</td>
-            <td>@auction.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
-            <td>@auction.CurrentPrice.ToString("C")</td>
-            <td class="text-center">
-                <a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id" class="btn btn-sm btn-outline-primary">View</a>
-                @if (auction.IsActive)
-                {
-                    <form asp-action="EndAuction" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@auction.Id" />
-                        <button type="submit" class="btn btn-sm btn-outline-danger">End</button>
-                    </form>
-                }
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card-admin p-3">
+            <span class="text-muted">Total Auctions</span>
+            <strong class="fs-4">@Model.Count()</strong>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card-admin p-3">
+            <span class="text-muted">Total Users</span>
+            <strong class="fs-4">@totalUsers</strong>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card-admin p-3">
+            <span class="text-muted">Total Bids</span>
+            <strong class="fs-4">@totalBids</strong>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold">All Auctions</div>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>End Time (UTC)</th>
+                    <th>Current Price</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var auction in Model)
+            {
+                <tr>
+                    <td>@auction.Title</td>
+                    <td>@(auction.IsActive && auction.EndTime > DateTime.UtcNow ? "Active" : "Closed")</td>
+                    <td>@auction.EndTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@auction.CurrentPrice.ToString("C")</td>
+                    <td class="text-center">
+                        <a asp-controller="Auction" asp-action="Details" asp-route-id="@auction.Id" class="btn btn-sm btn-outline-primary">View</a>
+                        @if (auction.IsActive)
+                        {
+                            <form asp-action="EndAuction" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@auction.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-warning">End</button>
+                            </form>
+                        }
+                        <form asp-action="RemoveAuction" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@auction.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">Users</div>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>
+                        @if (user.IsBlocked)
+                        {
+                            <span class="badge bg-danger">Blocked</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                    </td>
+                    <td class="text-center">
+                        <form asp-action="ToggleUserBlock" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-sm @(user.IsBlocked ? "btn-outline-success" : "btn-outline-danger")">
+                                @(user.IsBlocked ? "Unblock" : "Block")
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
