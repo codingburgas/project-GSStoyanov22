@@ -1,0 +1,13 @@
+# Build artifacts
+**/bin/
+**/obj/
+
+# Rider/VS
+.vs/
+*.user
+*.suo
+
+# Local databases
+*.db
+*.db-shm
+*.db-wal
