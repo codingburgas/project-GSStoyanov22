@@ -57,4 +57,46 @@ public class AuctionRepository : IAuctionRepository
             .OrderBy(a => a.EndTime)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Auction>> GetBySellerIdAsync(string sellerId)
+    {
+        return await dbContext.Auctions
+            .Include(a => a.Bids)
+            .Where(a => a.SellerId == sellerId)
+            .OrderByDescending(a => a.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Auction>> GetAuctionsWhereUserHasBidsAsync(string userId)
+    {
+        return await dbContext.Auctions
+            .Include(a => a.Bids)
+            .Where(a => a.Bids.Any(b => b.UserId == userId))
+            .OrderByDescending(a => a.EndTime)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalBidsCountAsync()
+    {
+        return await dbContext.Bids.CountAsync();
+    }
+
+    public async Task UpdateExpiredAuctionsAsync(DateTime utcNow)
+    {
+        var expiredActiveAuctions = await dbContext.Auctions
+            .Where(a => a.IsActive && a.EndTime <= utcNow)
+            .ToListAsync();
+
+        if (expiredActiveAuctions.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var auction in expiredActiveAuctions)
+        {
+            auction.IsActive = false;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 }

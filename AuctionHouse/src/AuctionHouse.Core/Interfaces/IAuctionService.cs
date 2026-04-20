@@ -14,6 +14,12 @@ public interface IAuctionService
 
     Task<AuctionViewModel?> GetAuctionByIdAsync(int id);
 
+    Task<AuctionDetailsViewModel?> GetAuctionDetailsByIdAsync(int id);
+
+    Task<UserDashboardViewModel> GetUserDashboardAsync(string userId);
+
+    Task<ReportsViewModel> GetReportsAsync();
+
     Task<bool> UpdateAuctionAsync(AuctionViewModel model, string requestUserId, bool isAdmin);
 
     Task<bool> DeleteAuctionAsync(int id, string requestUserId, bool isAdmin);

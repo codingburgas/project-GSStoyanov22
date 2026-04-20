@@ -15,4 +15,12 @@ public interface IAuctionRepository
     Task DeleteAsync(Auction auction);
 
     Task<IEnumerable<Auction>> GetActiveAuctionsAsync();
+
+    Task<IEnumerable<Auction>> GetBySellerIdAsync(string sellerId);
+
+    Task<IEnumerable<Auction>> GetAuctionsWhereUserHasBidsAsync(string userId);
+
+    Task<int> GetTotalBidsCountAsync();
+
+    Task UpdateExpiredAuctionsAsync(DateTime utcNow);
 }

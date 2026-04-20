@@ -46,5 +46,25 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .Property(a => a.Description)
             .HasMaxLength(2000)
             .IsRequired();
+
+        builder.Entity<Auction>()
+            .Property(a => a.StartingPrice)
+            .HasPrecision(18, 2);
+
+        builder.Entity<Auction>()
+            .Property(a => a.CurrentPrice)
+            .HasPrecision(18, 2);
+
+        builder.Entity<Auction>()
+            .Property(a => a.BidStep)
+            .HasPrecision(18, 2);
+
+        builder.Entity<Bid>()
+            .Property(b => b.Amount)
+            .HasPrecision(18, 2);
+
+        builder.Entity<ApplicationUser>()
+            .Property(u => u.IsBlocked)
+            .HasDefaultValue(false);
     }
 }
