@@ -23,7 +23,7 @@ public class AuctionController : Controller
 
     public async Task<IActionResult> Details(int id)
     {
-        var auction = await auctionService.GetAuctionByIdAsync(id);
+        var auction = await auctionService.GetAuctionDetailsByIdAsync(id);
         if (auction is null)
         {
             return NotFound();
@@ -47,6 +47,11 @@ public class AuctionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AuctionViewModel model)
     {
+        if (model.EndTime.ToUniversalTime() <= DateTime.UtcNow)
+        {
+            ModelState.AddModelError(nameof(model.EndTime), "End time must be in the future.");
+        }
+
         if (!ModelState.IsValid)
         {
             return View(model);
@@ -79,6 +84,11 @@ public class AuctionController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(AuctionViewModel model)
     {
+        if (model.EndTime.ToUniversalTime() <= DateTime.UtcNow)
+        {
+            ModelState.AddModelError(nameof(model.EndTime), "End time must be in the future.");
+        }
+
         if (!ModelState.IsValid)
         {
             return View(model);
