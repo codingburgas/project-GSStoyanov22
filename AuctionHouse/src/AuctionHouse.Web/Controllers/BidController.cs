@@ -17,8 +17,9 @@ public class BidController : Controller
     }
 
     [HttpPost]
+    [ActionName("PlaceBid")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Place(BidViewModel model)
+    public async Task<IActionResult> PlaceBid(BidViewModel model)
     {
         if (!ModelState.IsValid)
         {
