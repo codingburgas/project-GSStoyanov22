@@ -1,39 +1,97 @@
-@model AuctionViewModel
+@model AuctionDetailsViewModel
 @{
     ViewData["Title"] = "Auction Details";
+    var isOpen = Model.IsActive && Model.EndTime > DateTime.UtcNow;
 }
 
-<h2 class="mb-3">@Model.Title</h2>
-
-<div class="card shadow-sm mb-4">
-    <div class="card-body">
-        <p class="mb-2"><strong>Description:</strong> @Model.Description</p>
-        <p class="mb-2"><strong>Starting Price:</strong> @Model.StartingPrice.ToString("C")</p>
-        <p class="mb-2"><strong>Current Price:</strong> @Model.CurrentPrice.ToString("C")</p>
-        <p class="mb-2"><strong>Total Bids:</strong> @Model.BidsCount</p>
-        <p class="mb-2"><strong>Bid Step:</strong> @Model.BidStep.ToString("C")</p>
-        <p class="mb-2"><strong>Created:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm") UTC</p>
-        <p class="mb-2"><strong>Ends:</strong> @Model.EndTime.ToString("yyyy-MM-dd HH:mm") UTC</p>
-        <p class="mb-0"><strong>Status:</strong> @(Model.IsActive && Model.EndTime > DateTime.UtcNow ? "Active" : "Closed")</p>
+<div class="auction-header mb-4">
+    <div>
+        <h2 class="mb-1">@Model.Title</h2>
+        <span class="badge @(isOpen ? "bg-success" : "bg-secondary")">@(isOpen ? "Active" : "Auction Ended")</span>
+    </div>
+    <div class="countdown-wrap text-end">
+        <div class="small text-muted">Time remaining</div>
+        <div class="countdown" data-end="@Model.EndTime.ToString("o")">Loading...</div>
     </div>
 </div>
 
-@if (User.Identity?.IsAuthenticated == true && Model.IsActive && Model.EndTime > DateTime.UtcNow)
-{
-    <form asp-controller="Bid" asp-action="Place" method="post" class="card card-body mb-4">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="AuctionId" value="@Model.Id" />
-        <div class="row g-2 align-items-end">
-            <div class="col-md-4">
-                <label class="form-label">Your Bid</label>
-                <input name="Amount" type="number" step="0.01" min="@(Model.CurrentPrice + Model.BidStep)" class="form-control" required />
-                <div class="form-text">Must be above @Model.CurrentPrice.ToString("C") and follow step @Model.BidStep.ToString("C").</div>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-success w-100">Place Bid</button>
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <p class="mb-3">@Model.Description</p>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="stat-card">
+                            <span class="stat-label">Starting Price</span>
+                            <div class="stat-value">@Model.StartingPrice.ToString("C")</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stat-card">
+                            <span class="stat-label">Current Price</span>
+                            <div class="stat-value">@Model.CurrentPrice.ToString("C")</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stat-card">
+                            <span class="stat-label">Bid Step</span>
+                            <div class="stat-value">@Model.BidStep.ToString("C")</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="stat-card">
+                            <span class="stat-label">Total Bids</span>
+                            <div class="stat-value">@Model.BidsCount</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </form>
-}
+    </div>
 
-<a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+    <div class="col-lg-5">
+        @if (User.Identity?.IsAuthenticated == true && isOpen)
+        {
+            <form asp-controller="Bid" asp-action="PlaceBid" method="post" class="card card-body shadow-sm mb-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="AuctionId" value="@Model.Id" />
+                <label class="form-label fw-semibold">Place bid</label>
+                <input name="Amount" type="number" step="0.01" min="@(Model.CurrentPrice + Model.BidStep)" class="form-control mb-2" required />
+                <div class="form-text mb-3">Minimum next bid: @((Model.CurrentPrice + Model.BidStep).ToString("C"))</div>
+                <button type="submit" class="btn btn-success">Place Bid</button>
+            </form>
+        }
+        else if (!isOpen)
+        {
+            <div class="alert alert-secondary">Auction Ended</div>
+        }
+
+        <div class="card shadow-sm">
+            <div class="card-header fw-semibold">Bid History</div>
+            <div class="card-body p-0">
+                @if (!Model.BidHistory.Any())
+                {
+                    <p class="p-3 mb-0 text-muted">No bids yet.</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush bid-history-list">
+                        @foreach (var bid in Model.BidHistory)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-semibold">@bid.Bidder</div>
+                                    <small class="text-muted">@bid.Time.ToString("yyyy-MM-dd HH:mm:ss") UTC</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">@bid.Amount.ToString("C")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-outline-secondary mt-4">Back to List</a>

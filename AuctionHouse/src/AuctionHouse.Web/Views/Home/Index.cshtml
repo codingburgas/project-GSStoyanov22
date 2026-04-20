@@ -1,5 +1,15 @@
-<div class="hero rounded-4 p-5 text-center text-white">
+<div class="hero rounded-4 p-5 text-center text-white shadow-sm">
     <h1 class="display-5 fw-bold">AuctionHouse</h1>
-    <p class="lead mb-4">Create and bid on live auctions in real time.</p>
-    <a asp-controller="Auction" asp-action="Index" class="btn btn-warning btn-lg">Browse Auctions</a>
+    <p class="lead mb-4">Create listings, bid live, monitor countdowns, and track wins from your dashboard.</p>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a asp-controller="Auction" asp-action="Index" class="btn btn-warning btn-lg">Browse Auctions</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-light btn-lg">Open Dashboard</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg">Get Started</a>
+        }
+    </div>
 </div>

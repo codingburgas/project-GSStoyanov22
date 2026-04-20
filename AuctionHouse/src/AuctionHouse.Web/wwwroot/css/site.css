@@ -1,8 +1,82 @@
+:root {
+    --brand-navy: #102542;
+    --brand-blue: #1f4e79;
+    --brand-gold: #f5b700;
+    --surface: #ffffff;
+    --bg-soft: #eef3f9;
+}
+
 body {
-    background: linear-gradient(180deg, #f5f7fb 0%, #eef2f8 100%);
+    background: radial-gradient(circle at top right, #dbe9ff, #eef3f9 45%, #f6f9ff);
     min-height: 100vh;
 }
 
+.main-navbar {
+    background: linear-gradient(90deg, var(--brand-navy), var(--brand-blue));
+}
+
 .hero {
-    background: linear-gradient(135deg, #1f3a8a, #0f172a);
+    background: linear-gradient(120deg, var(--brand-navy), #16335b 60%, #285f92);
+}
+
+.auction-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.auction-card {
+    border: 1px solid #e6ecf4;
+}
+
+.stat-card {
+    background-color: var(--bg-soft);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+}
+
+.stat-card-admin {
+    border: 1px solid #dbe2ed;
+}
+
+.stat-label {
+    color: #5a6678;
+    font-size: 0.85rem;
+}
+
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.countdown-wrap {
+    min-width: 220px;
+}
+
+.countdown {
+    display: inline-block;
+    font-weight: 700;
+    color: var(--brand-blue);
+    background-color: #e7f0ff;
+    border: 1px solid #c7dcff;
+    border-radius: 999px;
+    padding: 0.35rem 0.8rem;
+}
+
+.countdown.ended {
+    color: #9a3412;
+    background-color: #fff7ed;
+    border-color: #fed7aa;
+}
+
+.bid-history-list {
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .countdown-wrap {
+        min-width: auto;
+    }
 }
